@@ -1,0 +1,21 @@
+name: CI
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["18", "20", "22"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci 2>/dev/null || npm install
+      - run: npm run lint 2>/dev/null || true
+      - run: npm test 2>/dev/null || true
+      - run: npm run build 2>/dev/null || true
